@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CsUtil.Collections.BinaryTree
+namespace CsLib.Collections.BinaryTree
 {
     public class BinaryTreeNode<K, V, Node> where Node : BinaryTreeNode<K, V, Node>
     {

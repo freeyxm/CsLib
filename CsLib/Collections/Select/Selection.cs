@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CsUtil.Collections.Select
+namespace CsLib.Collections.Select
 {
     public class Selection
     {

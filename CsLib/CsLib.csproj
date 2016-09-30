@@ -7,8 +7,8 @@
     <ProjectGuid>{98131D90-A25E-4F86-8D90-C02EAC8349BD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CsUtil</RootNamespace>
-    <AssemblyName>CsUtil</AssemblyName>
+    <RootNamespace>CsLib</RootNamespace>
+    <AssemblyName>CsLib</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -47,11 +47,6 @@
     <Compile Include="Collections\BinaryTree\RBTree.cs" />
     <Compile Include="Collections\Select\Selection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Util\ActionChain.cs" />
-    <Compile Include="Util\BitOperation.cs" />
-    <Compile Include="Util\CSharpUtil.cs" />
-    <Compile Include="Util\ExecTimer.cs" />
-    <Compile Include="Util\Utility.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

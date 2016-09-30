@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CsUtil.Collections.BinaryTree
+namespace CsLib.Collections.BinaryTree
 {
     class Cache<T> where T : new()
     {
