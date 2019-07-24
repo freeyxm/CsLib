@@ -11,8 +11,8 @@ namespace CsLib.Collections.BinaryTree
         V this[K key] { get; set; }
         int Count { get; }
 
-        void TraversePreOrder(Action<K, V> action);
-        void TraverseInOrder(Action<K, V> action);
-        void TraversePostOrder(Action<K, V> action);
+        void TraversePreOrder(Func<K, V, bool> action);
+        void TraverseInOrder(Func<K, V, bool> action);
+        void TraversePostOrder(Func<K, V, bool> action);
     }
 }

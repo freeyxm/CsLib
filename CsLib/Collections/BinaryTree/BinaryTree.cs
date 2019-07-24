@@ -108,7 +108,7 @@ namespace CsLib.Collections.BinaryTree
         public virtual int Capacity { get { return m_count + m_nodeCache.Count; } }
 
         #region Recursive Traverse
-        public virtual void TraversePreOrder_r(Action<K, V> action)
+        public virtual void TraversePreOrder_r(Func<K, V, bool> action)
         {
             if (m_root != Nil)
             {
@@ -116,7 +116,7 @@ namespace CsLib.Collections.BinaryTree
             }
         }
 
-        public virtual void TraverseInOrder_r(Action<K, V> action)
+        public virtual void TraverseInOrder_r(Func<K, V, bool> action)
         {
             if (m_root != Nil)
             {
@@ -124,7 +124,7 @@ namespace CsLib.Collections.BinaryTree
             }
         }
 
-        public virtual void TraversePostOrder_r(Action<K, V> action)
+        public virtual void TraversePostOrder_r(Func<K, V, bool> action)
         {
             if (m_root != Nil)
             {
@@ -132,7 +132,7 @@ namespace CsLib.Collections.BinaryTree
             }
         }
 
-        private void TraversePreOrder_r(Node node, Action<K, V> action)
+        private void TraversePreOrder_r(Node node, Func<K, V, bool> action)
         {
             action(node.key, node.value);
 
@@ -143,7 +143,7 @@ namespace CsLib.Collections.BinaryTree
                 TraversePreOrder_r(node.rchild, action);
         }
 
-        private void TraverseInOrder_r(Node node, Action<K, V> action)
+        private void TraverseInOrder_r(Node node, Func<K, V, bool> action)
         {
             if (node.lchild != Nil)
                 TraverseInOrder_r(node.lchild, action);
@@ -154,7 +154,7 @@ namespace CsLib.Collections.BinaryTree
                 TraverseInOrder_r(node.rchild, action);
         }
 
-        private void TraversePostOrder_r(Node node, Action<K, V> action)
+        private void TraversePostOrder_r(Node node, Func<K, V, bool> action)
         {
             if (node.lchild != Nil)
                 TraversePostOrder_r(node.lchild, action);
@@ -167,7 +167,7 @@ namespace CsLib.Collections.BinaryTree
         #endregion Recursive Traverse
 
         #region Non Recursive Traverse
-        public virtual void TraversePreOrder(Action<K, V> action)
+        public virtual void TraversePreOrder(Func<K, V, bool> action)
         {
             if (m_root == Nil)
                 return;
@@ -197,7 +197,7 @@ namespace CsLib.Collections.BinaryTree
             } while (true);
         }
 
-        public virtual void TraverseInOrder(Action<K, V> action)
+        public virtual void TraverseInOrder(Func<K, V, bool> action)
         {
             if (m_root == Nil)
                 return;
@@ -230,7 +230,7 @@ namespace CsLib.Collections.BinaryTree
             }
         }
 
-        public virtual void TraversePostOrder(Action<K, V> action)
+        public virtual void TraversePostOrder(Func<K, V, bool> action)
         {
             if (m_root == Nil)
                 return;
@@ -363,7 +363,7 @@ namespace CsLib.Collections.BinaryTree
         {
             var child = target.lchild;
 
-            if (child != null)
+            if (child != Nil)
             {
                 child.parent = target.parent;
                 target.lchild = Nil;
@@ -388,7 +388,7 @@ namespace CsLib.Collections.BinaryTree
         {
             var child = target.rchild;
 
-            if (child != null)
+            if (child != Nil)
             {
                 child.parent = target.parent;
                 target.rchild = Nil;

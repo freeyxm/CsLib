@@ -150,14 +150,16 @@ namespace Test
             return true;
         }
 
-        private void Traverse(int key, int value)
+        private bool Traverse(int key, int value)
         {
             m_result.Add(key);
+            return true;
         }
 
-        private void TraverseCount(int key, int value)
+        private bool TraverseCount(int key, int value)
         {
             ++m_count;
+            return true;
         }
 
         public virtual void TestPerformace()
@@ -242,8 +244,9 @@ namespace Test
             Console.WriteLine("Done.\n");
         }
 
-        private void Traverse2(int key, int value)
+        private bool Traverse2(int key, int value)
         {
+            return true;
         }
     }
 }
