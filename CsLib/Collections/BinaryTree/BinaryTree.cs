@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using CsLib.Common;
 
 namespace CsLib.Collections.BinaryTree
 {
@@ -19,7 +20,7 @@ namespace CsLib.Collections.BinaryTree
         protected Node m_root;
         protected Node Nil; // null node.
         protected IEqualityComparer<K> m_comparer;
-        private Cache<Node> m_nodeCache;
+        private ObjectPool<Node> m_nodeCache;
         private Stack<Node> m_traverseStack; // used by non recursive traversal.
         private int m_count;
 
@@ -28,7 +29,7 @@ namespace CsLib.Collections.BinaryTree
             m_root = Nil = nil;
             m_comparer = comparer ?? EqualityComparer<K>.Default;
             m_traverseStack = new Stack<Node>();
-            m_nodeCache = new Cache<Node>(capacity);
+            m_nodeCache = new ObjectPool<Node>(capacity);
             for (int i = 0; i < capacity; ++i)
             {
                 m_nodeCache.FreeNode(new Node());

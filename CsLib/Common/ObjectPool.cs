@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CsLib.Collections.BinaryTree
+namespace CsLib.Common
 {
-    class Cache<T> where T : new()
+    class ObjectPool<T> where T : new()
     {
         protected Queue<T> m_cacheQueue;
 
-        public Cache(int capacity)
+        public ObjectPool(int capacity)
         {
             m_cacheQueue = new Queue<T>(capacity);
             for (int i = 0; i < capacity; ++i)

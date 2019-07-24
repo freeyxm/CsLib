@@ -42,10 +42,10 @@
   <ItemGroup>
     <Compile Include="Collections\BinaryTree\AvlTree.cs" />
     <Compile Include="Collections\BinaryTree\BinaryTree.cs" />
-    <Compile Include="Collections\BinaryTree\Cache.cs" />
     <Compile Include="Collections\BinaryTree\IBinaryTree.cs" />
     <Compile Include="Collections\BinaryTree\RBTree.cs" />
     <Compile Include="Collections\Select\Selection.cs" />
+    <Compile Include="Common\ObjectPool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
