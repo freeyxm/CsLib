@@ -1,5 +1,5 @@
 ﻿using System;
-using CsLib.Collections.BinaryTree;
+using CsLib.Collections;
 
 namespace Test
 {

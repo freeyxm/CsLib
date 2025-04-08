@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CsLib.Collections.BinaryTree
+namespace CsLib.Collections
 {
     public class AvlTreeNode<K, V> : BinaryTreeNode<K, V, AvlTreeNode<K, V>>
     {

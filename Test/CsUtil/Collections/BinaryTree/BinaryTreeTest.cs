@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using CsUtil.Test;
 using CsUtil.Util;
-using CsLib.Collections.BinaryTree;
+using CsLib.Collections;
 
 namespace Test
 {

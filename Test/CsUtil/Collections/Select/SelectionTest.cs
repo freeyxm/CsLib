@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using CsLib.Collections.Select;
+using CsLib.Collections;
 using CsUtil.Test;
 
 namespace Test

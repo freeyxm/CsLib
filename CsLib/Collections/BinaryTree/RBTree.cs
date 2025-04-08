@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace CsLib.Collections.BinaryTree
+namespace CsLib.Collections
 {
     public class RBTreeNode<K, V> : BinaryTreeNode<K, V, RBTreeNode<K, V>>
     {
