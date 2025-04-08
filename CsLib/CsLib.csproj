@@ -44,6 +44,8 @@
     <Compile Include="Collections\BinaryTree\BinaryTree.cs" />
     <Compile Include="Collections\BinaryTree\IBinaryTree.cs" />
     <Compile Include="Collections\BinaryTree\RBTree.cs" />
+    <Compile Include="Collections\Queue\Deque.cs" />
+    <Compile Include="Collections\Queue\PriorityQueue.cs" />
     <Compile Include="Collections\Select\Selection.cs" />
     <Compile Include="Common\ObjectPool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
