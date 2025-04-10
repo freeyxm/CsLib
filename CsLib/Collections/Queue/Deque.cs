@@ -44,8 +44,7 @@ namespace CsLib.Collections
                 }
             }
 
-            int tail = mTail;
-            mArray[tail] = item;
+            mArray[mTail] = item;
             mCount++;
         }
 
@@ -68,8 +67,7 @@ namespace CsLib.Collections
                 }
             }
 
-            int head = mHead;
-            mArray[head] = item;
+            mArray[mHead] = item;
             mCount++;
         }
 
@@ -80,15 +78,19 @@ namespace CsLib.Collections
 
         public T PopFront()
         {
-            if (mCount <= 0)
+            if (mCount == 0)
             {
                 throw new InvalidOperationException("The queue is empty.");
             }
 
-            int head = mHead++;
-            if (mHead >= mArray.Length)
+            int head = mHead;
+            if (mCount > 1)
             {
-                mHead -= mArray.Length;
+                mHead++;
+                if (mHead >= mArray.Length)
+                {
+                    mHead -= mArray.Length;
+                }
             }
             var item = mArray[head];
             mArray[head] = default(T); // Clear the reference to allow garbage collection
@@ -98,15 +100,19 @@ namespace CsLib.Collections
 
         public T PopBack()
         {
-            if (mCount <= 0)
+            if (mCount == 0)
             {
                 throw new InvalidOperationException("The queue is empty.");
             }
 
-            int tail = mTail--;
-            if (mTail < 0)
+            int tail = mTail;
+            if (mCount > 1)
             {
-                mTail += mArray.Length;
+                mTail--;
+                if (mTail < 0)
+                {
+                    mTail += mArray.Length;
+                }
             }
             var item = mArray[tail];
             mArray[tail] = default(T); // Clear the reference to allow garbage collection
@@ -114,9 +120,14 @@ namespace CsLib.Collections
             return item;
         }
 
+        public T Peek()
+        {
+            return PeekFront();
+        }
+
         public T PeekFront()
         {
-            if (mCount <= 0)
+            if (mCount == 0)
             {
                 throw new InvalidOperationException("The queue is empty.");
             }
@@ -125,7 +136,7 @@ namespace CsLib.Collections
 
         public T PeekBack()
         {
-            if (mCount <= 0)
+            if (mCount == 0)
             {
                 throw new InvalidOperationException("The queue is empty.");
             }
@@ -134,77 +145,155 @@ namespace CsLib.Collections
 
         public bool Remove(T item)
         {
-            int length = mArray.Length;
-            for (int i = 0; i < mCount; i++)
+            if (mCount == 0)
             {
-                int index = mHead + i;
-                if (index >= length)
+                return false;
+            }
+
+            if (mHead <= mTail)
+            {
+                for (int i = mHead; i <= mTail; i++)
                 {
-                    index -= length;
-                }
-
-                if (Equals(mArray[index], item))
-                {
-                    for (int j = i; j < mCount - 1; j++)
+                    if (Equals(mArray[i], item))
                     {
-                        int index1 = mHead + j;
-                        int index2 = index1 + 1;
+                        for (int j = i; j < mTail; j++)
+                        {
+                            mArray[j] = mArray[j + 1];
+                        }
 
-                        if (index1 >= length)
-                            index1 -= length;
-                        if (index2 >= length)
-                            index2 -= length;
-
-                        mArray[index1] = mArray[index2];
+                        mCount--;
+                        if (mCount > 0)
+                        {
+                            mTail--;
+                        }
+                        return true;
                     }
-
-                    mTail--;
-                    if (mTail < 0)
-                    {
-                        mTail += mArray.Length;
-                    }
-                    mCount--;
-                    return true;
                 }
             }
+            else
+            {
+                int length = mArray.Length;
+                int count = mCount;
+                for (int i = 0; i < count; i++)
+                {
+                    int index = mHead + i;
+                    if (index >= length)
+                    {
+                        index -= length;
+                    }
+
+                    if (Equals(mArray[index], item))
+                    {
+                        for (int j = i; j < count - 1; j++)
+                        {
+                            int index1 = mHead + j;
+                            int index2 = index1 + 1;
+
+                            if (index1 >= length)
+                            {
+                                index1 -= length;
+                                index2 -= length;
+                            }
+                            else if (index2 >= length)
+                            {
+                                index2 -= length;
+                            }
+
+                            mArray[index1] = mArray[index2];
+                        }
+
+                        mCount--;
+                        if (mCount > 0)
+                        {
+                            mTail--;
+                            if (mTail < 0)
+                            {
+                                mTail += mArray.Length;
+                            }
+                        }
+                        return true;
+                    }
+                }
+            }
+
             return false;
         }
 
         public bool Remove(Predicate<T> match, out T target)
         {
-            int length = mArray.Length;
-            for (int i = 0; i < mCount; i++)
+            if (mCount == 0)
             {
-                int index = mHead + i;
-                if (index >= length)
+                target = default(T);
+                return false;
+            }
+
+            if (mHead <= mTail)
+            {
+                for (int i = mHead; i <= mTail; i++)
                 {
-                    index -= length;
+                    if (match(mArray[i]))
+                    {
+                        target = mArray[i];
+
+                        for (int j = i; j < mTail; j++)
+                        {
+                            mArray[j] = mArray[j + 1];
+                        }
+
+                        mCount--;
+                        if (mCount > 0)
+                        {
+                            mTail--;
+                        }
+                        return true;
+                    }
                 }
-
-                if (match(mArray[index]))
+            }
+            else
+            {
+                int length = mArray.Length;
+                int count = mCount;
+                for (int i = 0; i < count; i++)
                 {
-                    target = mArray[index];
-
-                    for (int j = i; j < mCount - 1; j++)
+                    int index = mHead + i;
+                    if (index >= length)
                     {
-                        int index1 = mHead + j;
-                        int index2 = index1 + 1;
-
-                        if (index1 >= length)
-                            index1 -= length;
-                        if (index2 >= length)
-                            index2 -= length;
-
-                        mArray[index1] = mArray[index2];
+                        index -= length;
                     }
 
-                    mTail--;
-                    if (mTail < 0)
+                    if (match(mArray[index]))
                     {
-                        mTail += mArray.Length;
+                        target = mArray[index];
+
+                        for (int j = i; j < count - 1; j++)
+                        {
+                            int index1 = mHead + j;
+                            int index2 = index1 + 1;
+
+                            if (index1 >= length)
+                            {
+                                index1 -= length;
+                                index2 -= length;
+                            }
+                            else if (index2 >= length)
+                            {
+                                index2 -= length;
+                            }
+
+                            mArray[index1] = mArray[index2];
+                        }
+
+                        mCount--;
+                        if (mCount > 0)
+                        {
+                            mTail--;
+                            if (mTail < 0)
+                            {
+                                mTail += mArray.Length;
+                            }
+                        }
+                        return true;
                     }
-                    mCount--;
-                    return true;
                 }
             }
 
@@ -214,41 +303,164 @@ namespace CsLib.Collections
 
         public int RemoveAll(Predicate<T> match)
         {
-            int rCount = 0;
-            int length = mArray.Length;
-            for (int i = 0; i < mCount; i++)
+            if (mCount == 0)
             {
-                int index = mHead + i;
-                if (index >= length)
+                return 0;
+            }
+
+            int rCount = 0;
+            if (mHead <= mTail)
+            {
+                for (int i = mHead; i <= mTail; i++)
                 {
-                    index -= length;
-                }
-
-                if (match(mArray[index]))
-                {
-                    for (int j = i; j < mCount - 1; j++)
+                    if (match(mArray[i]))
                     {
-                        int index1 = mHead + j;
-                        int index2 = index1 + 1;
+                        for (int j = i; j < mTail; j++)
+                        {
+                            mArray[j] = mArray[j + 1];
+                        }
 
-                        if (index1 >= length)
-                            index1 -= length;
-                        if (index2 >= length)
-                            index2 -= length;
-
-                        mArray[index1] = mArray[index2];
+                        rCount++;
+                        mCount--;
+                        if (mCount > 0)
+                        {
+                            mTail--;
+                        }
                     }
-
-                    mTail--;
-                    if (mTail < 0)
-                    {
-                        mTail += mArray.Length;
-                    }
-                    mCount--;
-                    rCount++;
                 }
             }
+            else
+            {
+                int length = mArray.Length;
+                int count = mCount;
+                for (int i = 0; i < count; i++)
+                {
+                    int index = mHead + i;
+                    if (index >= length)
+                    {
+                        index -= length;
+                    }
+
+                    if (match(mArray[index]))
+                    {
+                        for (int j = i; j < count - 1; j++)
+                        {
+                            int index1 = mHead + j;
+                            int index2 = index1 + 1;
+
+                            if (index1 >= length)
+                            {
+                                index1 -= length;
+                                index2 -= length;
+                            }
+                            else if (index2 >= length)
+                            {
+                                index2 -= length;
+                            }
+
+                            mArray[index1] = mArray[index2];
+                        }
+
+                        rCount++;
+                        mCount--;
+                        if (mCount > 0)
+                        {
+                            mTail--;
+                            if (mTail < 0)
+                            {
+                                mTail += mArray.Length;
+                            }
+                        }
+                    }
+                }
+            }
+
             return rCount;
+        }
+
+        public bool Find(Predicate<T> match, out T target)
+        {
+            if (mCount == 0)
+            {
+                target = default(T);
+                return false;
+            }
+
+            if (mHead <= mTail)
+            {
+                for (int i = mHead; i <= mTail; i++)
+                {
+                    if (match(mArray[i]))
+                    {
+                        target = mArray[i];
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                int length = mArray.Length;
+                for (int i = 0; i < mCount; i++)
+                {
+                    int index = mHead + i;
+                    if (index >= length)
+                    {
+                        index -= length;
+                    }
+
+                    if (match(mArray[index]))
+                    {
+                        target = mArray[index];
+                        return true;
+                    }
+                }
+            }
+
+            target = default(T);
+            return false;
+        }
+
+        public bool Exists(T item)
+        {
+            if (mCount == 0)
+            {
+                return false;
+            }
+
+            if (mHead <= mTail)
+            {
+                for (int i = mHead; i <= mTail; i++)
+                {
+                    if (Equals(mArray[i], item))
+                    {
+                        return true;
+                    }
+                }
+            }
+            else
+            {
+                int length = mArray.Length;
+                for (int i = 0; i < mCount; i++)
+                {
+                    int index = mHead + i;
+                    if (index >= length)
+                    {
+                        index -= length;
+                    }
+
+                    if (Equals(mArray[index], item))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private bool Equals(T x, T y)
+        {
+            return object.Equals(x, y);
         }
 
         private void Resize()
