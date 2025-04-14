@@ -479,7 +479,7 @@ namespace CsLib.Collections
             }
             mArray = newArray;
             mHead = 0;
-            mTail = mCount;
+            mTail = mCount - 1;
         }
     }
 }
