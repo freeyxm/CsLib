@@ -161,6 +161,7 @@ namespace CsLib.Collections
                             mArray[j] = mArray[j + 1];
                         }
 
+                        mArray[mTail] = default(T); // Clear the reference to allow garbage collection
                         mCount--;
                         if (mCount > 0)
                         {
@@ -202,6 +203,7 @@ namespace CsLib.Collections
                             mArray[index1] = mArray[index2];
                         }
 
+                        mArray[mTail] = default(T); // Clear the reference to allow garbage collection
                         mCount--;
                         if (mCount > 0)
                         {
@@ -240,6 +242,7 @@ namespace CsLib.Collections
                             mArray[j] = mArray[j + 1];
                         }
 
+                        mArray[mTail] = default(T); // Clear the reference to allow garbage collection
                         mCount--;
                         if (mCount > 0)
                         {
@@ -283,6 +286,7 @@ namespace CsLib.Collections
                             mArray[index1] = mArray[index2];
                         }
 
+                        mArray[mTail] = default(T); // Clear the reference to allow garbage collection
                         mCount--;
                         if (mCount > 0)
                         {
@@ -301,7 +305,7 @@ namespace CsLib.Collections
             return false;
         }
 
-        public int RemoveAll(Predicate<T> match)
+        public int RemoveAll(Predicate<T> match, Action<T> onRemove = null)
         {
             if (mCount == 0)
             {
@@ -313,19 +317,23 @@ namespace CsLib.Collections
             {
                 for (int i = mHead; i <= mTail; i++)
                 {
-                    if (match(mArray[i]))
+                    var target = mArray[i];
+                    if (match(target))
                     {
                         for (int j = i; j < mTail; j++)
                         {
                             mArray[j] = mArray[j + 1];
                         }
 
+                        mArray[mTail] = default(T); // Clear the reference to allow garbage collection
                         rCount++;
                         mCount--;
                         if (mCount > 0)
                         {
                             mTail--;
                         }
+
+                        onRemove?.Invoke(target);
                     }
                 }
             }
@@ -341,7 +349,8 @@ namespace CsLib.Collections
                         index -= length;
                     }
 
-                    if (match(mArray[index]))
+                    var target = mArray[index];
+                    if (match(target))
                     {
                         for (int j = i; j < count - 1; j++)
                         {
@@ -361,6 +370,7 @@ namespace CsLib.Collections
                             mArray[index1] = mArray[index2];
                         }
 
+                        mArray[mTail] = default(T); // Clear the reference to allow garbage collection
                         rCount++;
                         mCount--;
                         if (mCount > 0)
@@ -371,6 +381,8 @@ namespace CsLib.Collections
                                 mTail += mArray.Length;
                             }
                         }
+
+                        onRemove?.Invoke(target);
                     }
                 }
             }
@@ -456,6 +468,19 @@ namespace CsLib.Collections
             }
 
             return false;
+        }
+
+        public void Clear()
+        {
+            if (mArray != null)
+            {
+                for (int i = 0; i < mArray.Length; i++)
+                {
+                    mArray[i] = default(T); // Clear the reference to allow garbage collection
+                }
+            }
+            mHead = mTail = 0;
+            mCount = 0;
         }
 
         private bool Equals(T x, T y)

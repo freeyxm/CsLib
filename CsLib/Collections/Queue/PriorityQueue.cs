@@ -155,6 +155,19 @@ namespace CsLib.Collections
             return false;
         }
 
+        public bool Remove(int priority, T item)
+        {
+            if (mDict.TryGetValue(priority, out var queue))
+            {
+                if (queue.Remove(item))
+                {
+                    mCount--;
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public bool Remove(Predicate<T> match, out T target)
         {
             foreach (var kvp in mDict)
@@ -170,12 +183,12 @@ namespace CsLib.Collections
             return false;
         }
 
-        public void RemoveAll(Predicate<T> match)
+        public void RemoveAll(Predicate<T> match, Action<T> onRemove = null)
         {
             foreach (var kvp in mDict)
             {
                 var queue = kvp.Value;
-                int count = queue.RemoveAll(match);
+                int count = queue.RemoveAll(match, onRemove);
                 if (count > 0)
                 {
                     mCount -= count;
@@ -209,6 +222,12 @@ namespace CsLib.Collections
                 }
             }
             return false;
+        }
+
+        public void Clear()
+        {
+            mDict.Clear();
+            mCount = 0;
         }
     }
 }
