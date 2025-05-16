@@ -315,7 +315,7 @@ namespace CsLib.Collections
             int rCount = 0;
             if (mHead <= mTail)
             {
-                for (int i = mHead; i <= mTail; i++)
+                for (int i = mTail; i >= mHead; i--)
                 {
                     var target = mArray[i];
                     if (match(target))
@@ -343,28 +343,28 @@ namespace CsLib.Collections
                 int count = mCount;
                 for (int i = 0; i < count; i++)
                 {
-                    int index = mHead + i;
-                    if (index >= length)
+                    int index = mTail - i;
+                    if (index < 0)
                     {
-                        index -= length;
+                        index += length;
                     }
 
                     var target = mArray[index];
                     if (match(target))
                     {
-                        for (int j = i; j < count - 1; j++)
+                        for (int j = i; j > 0; j--)
                         {
-                            int index1 = mHead + j;
+                            int index1 = mTail - j;
                             int index2 = index1 + 1;
 
-                            if (index1 >= length)
+                            if (index2 < 0)
                             {
-                                index1 -= length;
-                                index2 -= length;
+                                index2 += length;
+                                index1 += length;
                             }
-                            else if (index2 >= length)
+                            else if (index1 < 0)
                             {
-                                index2 -= length;
+                                index1 += length;
                             }
 
                             mArray[index1] = mArray[index2];
