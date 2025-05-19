@@ -92,6 +92,11 @@ namespace CsLib.Collections
                     mHead -= mArray.Length;
                 }
             }
+            else
+            {
+                mHead = mTail = 0;
+            }
+
             var item = mArray[head];
             mArray[head] = default(T); // Clear the reference to allow garbage collection
             mCount--;
@@ -114,6 +119,11 @@ namespace CsLib.Collections
                     mTail += mArray.Length;
                 }
             }
+            else
+            {
+                mHead = mTail = 0;
+            }
+
             var item = mArray[tail];
             mArray[tail] = default(T); // Clear the reference to allow garbage collection
             mCount--;
@@ -156,6 +166,12 @@ namespace CsLib.Collections
                 {
                     if (Equals(mArray[i], item))
                     {
+                        if (i == mHead)
+                        {
+                            PopFront();
+                            return true;
+                        }
+
                         for (int j = i; j < mTail; j++)
                         {
                             mArray[j] = mArray[j + 1];
@@ -166,6 +182,10 @@ namespace CsLib.Collections
                         if (mCount > 0)
                         {
                             mTail--;
+                        }
+                        else
+                        {
+                            mHead = mTail = 0;
                         }
                         return true;
                     }
@@ -185,6 +205,12 @@ namespace CsLib.Collections
 
                     if (Equals(mArray[index], item))
                     {
+                        if (index == mHead)
+                        {
+                            PopFront();
+                            return true;
+                        }
+
                         for (int j = i; j < count - 1; j++)
                         {
                             int index1 = mHead + j;
@@ -212,6 +238,10 @@ namespace CsLib.Collections
                             {
                                 mTail += mArray.Length;
                             }
+                        }
+                        else
+                        {
+                            mHead = mTail = 0;
                         }
                         return true;
                     }
@@ -237,6 +267,12 @@ namespace CsLib.Collections
                     {
                         target = mArray[i];
 
+                        if (i == mHead)
+                        {
+                            PopFront();
+                            return true;
+                        }
+
                         for (int j = i; j < mTail; j++)
                         {
                             mArray[j] = mArray[j + 1];
@@ -247,6 +283,10 @@ namespace CsLib.Collections
                         if (mCount > 0)
                         {
                             mTail--;
+                        }
+                        else
+                        {
+                            mHead = mTail = 0;
                         }
                         return true;
                     }
@@ -267,6 +307,12 @@ namespace CsLib.Collections
                     if (match(mArray[index]))
                     {
                         target = mArray[index];
+
+                        if (index == mHead)
+                        {
+                            PopFront();
+                            return true;
+                        }
 
                         for (int j = i; j < count - 1; j++)
                         {
@@ -296,6 +342,10 @@ namespace CsLib.Collections
                                 mTail += mArray.Length;
                             }
                         }
+                        else
+                        {
+                            mHead = mTail = 0;
+                        }
                         return true;
                     }
                 }
@@ -320,6 +370,14 @@ namespace CsLib.Collections
                     var target = mArray[i];
                     if (match(target))
                     {
+                        if (i == mHead)
+                        {
+                            PopFront();
+                            rCount++;
+                            onRemove?.Invoke(target);
+                            break;
+                        }
+
                         for (int j = i; j < mTail; j++)
                         {
                             mArray[j] = mArray[j + 1];
@@ -332,6 +390,10 @@ namespace CsLib.Collections
                         {
                             mTail--;
                         }
+                        else
+                        {
+                            mHead = mTail = 0;
+                        }
 
                         onRemove?.Invoke(target);
                     }
@@ -341,9 +403,10 @@ namespace CsLib.Collections
             {
                 int length = mArray.Length;
                 int count = mCount;
+                int tail = mTail;
                 for (int i = 0; i < count; i++)
                 {
-                    int index = mTail - i;
+                    int index = tail - i;
                     if (index < 0)
                     {
                         index += length;
@@ -352,9 +415,17 @@ namespace CsLib.Collections
                     var target = mArray[index];
                     if (match(target))
                     {
+                        if (index == mHead)
+                        {
+                            PopFront();
+                            rCount++;
+                            onRemove?.Invoke(target);
+                            break;
+                        }
+
                         for (int j = i; j > 0; j--)
                         {
-                            int index1 = mTail - j;
+                            int index1 = tail - j;
                             int index2 = index1 + 1;
 
                             if (index2 < 0)
@@ -380,6 +451,10 @@ namespace CsLib.Collections
                             {
                                 mTail += mArray.Length;
                             }
+                        }
+                        else
+                        {
+                            mHead = mTail = 0;
                         }
 
                         onRemove?.Invoke(target);
