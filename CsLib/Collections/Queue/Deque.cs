@@ -20,6 +20,12 @@ namespace CsLib.Collections
 
         public int Count => mCount;
 
+#if TRUE // 单元测试使用
+        public int Head => mHead;
+        public int Tail => mTail;
+        public T[] Data => mArray;
+#endif
+
         public void Enqueue(T item)
         {
             PushBack(item);
