@@ -380,7 +380,7 @@ namespace CsLib.Collections
                         {
                             PopFront();
                             rCount++;
-                            onRemove?.Invoke(target);
+                            SafeInvoke(onRemove, target, "Deque.RemoveAll.onRemove");
                             break;
                         }
 
@@ -401,7 +401,7 @@ namespace CsLib.Collections
                             mHead = mTail = 0;
                         }
 
-                        onRemove?.Invoke(target);
+                        SafeInvoke(onRemove, target, "Deque.RemoveAll.onRemove");
                     }
                 }
             }
@@ -425,7 +425,7 @@ namespace CsLib.Collections
                         {
                             PopFront();
                             rCount++;
-                            onRemove?.Invoke(target);
+                            SafeInvoke(onRemove, target, "Deque.RemoveAll.onRemove");
                             break;
                         }
 
@@ -463,7 +463,7 @@ namespace CsLib.Collections
                             mHead = mTail = 0;
                         }
 
-                        onRemove?.Invoke(target);
+                        SafeInvoke(onRemove, target, "Deque.RemoveAll.onRemove");
                     }
                 }
             }
@@ -513,7 +513,7 @@ namespace CsLib.Collections
             return false;
         }
 
-        public bool Exists(T item)
+        public bool Contains(T item)
         {
             if (mCount == 0)
             {
@@ -586,6 +586,21 @@ namespace CsLib.Collections
             mArray = newArray;
             mHead = 0;
             mTail = mCount - 1;
+        }
+
+        private void SafeInvoke(Action<T> action, T param, string tag)
+        {
+            if (action != null)
+            {
+                try
+                {
+                    action(param);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("[{0}] {1}", tag, e);
+                }
+            }
         }
     }
 }

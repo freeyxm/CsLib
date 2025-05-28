@@ -114,6 +114,21 @@ namespace CsLib.Collections
             return item;
         }
 
+        public void MoveToBack(PriorityQueue<T> other)
+        {
+            foreach (var kvp in mDict)
+            {
+                int priority = kvp.Key;
+                var queue = kvp.Value;
+                while (queue.Count > 0)
+                {
+                    mCount--;
+                    var item = queue.Dequeue();
+                    other.PushBack(priority, item);
+                }
+            }
+        }
+
         public void MoveToBack(int priority, PriorityQueue<T> other)
         {
             if (mDict.TryGetValue(priority, out var queue))
@@ -196,6 +211,20 @@ namespace CsLib.Collections
             }
         }
 
+        public void RemoveAll(Action<T> onRemove = null)
+        {
+            foreach (var kvp in mDict)
+            {
+                var queue = kvp.Value;
+                while (queue.Count > 0)
+                {
+                    mCount--;
+                    var item = queue.Dequeue();
+                    onRemove?.Invoke(item);
+                }
+            }
+        }
+
         public bool Find(Predicate<T> match, out T target)
         {
             foreach (var kvp in mDict)
@@ -211,12 +240,12 @@ namespace CsLib.Collections
             return false;
         }
 
-        public bool Exists(T item)
+        public bool Contains(T item)
         {
             foreach (var kvp in mDict)
             {
                 var queue = kvp.Value;
-                if (queue.Exists(item))
+                if (queue.Contains(item))
                 {
                     return true;
                 }
