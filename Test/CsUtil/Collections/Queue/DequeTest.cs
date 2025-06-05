@@ -1,4 +1,5 @@
 using CsLib.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Test
@@ -8,11 +9,21 @@ namespace Test
         private class DownInfo
         {
             public int Id = 0;
+
+            public override string ToString()
+            {
+                return Id.ToString();
+            }
         }
 
         private struct StDownInfo
         {
             public int Id;
+
+            public override string ToString()
+            {
+                return Id.ToString();
+            }
         }
 
         public void SetUp()
@@ -572,6 +583,160 @@ namespace Test
             Assert.AreEqual(0, dueue.Count);
             Assert.AreEqual(0, dueue.Head);
             Assert.AreEqual(0, dueue.Tail);
+        }
+
+        public void Test5A()
+        {
+            var dueue = new Deque<DownInfo>(2, true);
+            var result = new List<DownInfo>();
+
+            dueue.Enqueue(NewDownInfo(1));
+            dueue.Enqueue(NewDownInfo(2));
+            dueue.Enqueue(NewDownInfo(3));
+            dueue.Enqueue(NewDownInfo(4));
+            dueue.Enqueue(NewDownInfo(5));
+
+            result.Clear();
+            dueue.FindAll((a) => a.Id == 6, ref result);
+            Assert.AreEqual(0, result.Count);
+
+            result.Clear();
+            dueue.FindAll((a) => a.Id == 1 || a.Id == 5, ref result);
+            Assert.AreEqual(2, result.Count);
+            Assert.AreEqual(1, result[0].Id);
+            Assert.AreEqual(5, result[1].Id);
+
+            result.Clear();
+            dueue.FindAll((a) => a.Id == 2 || a.Id == 4, ref result);
+            Assert.AreEqual(2, result.Count);
+            Assert.AreEqual(2, result[0].Id);
+            Assert.AreEqual(4, result[1].Id);
+
+            result.Clear();
+            dueue.Remove((a) => a.Id == 2, out DownInfo target);
+            dueue.FindAll((a) => a.Id == 2 || a.Id == 3, ref result);
+            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual(3, result[0].Id);
+        }
+
+        public void Test5B()
+        {
+            var dueue = new Deque<DownInfo>(2, true);
+            DownInfo target = null;
+            bool res = false;
+
+            dueue.Enqueue(NewDownInfo(1));
+            dueue.Enqueue(NewDownInfo(2));
+            dueue.Enqueue(NewDownInfo(3));
+            dueue.Enqueue(NewDownInfo(4));
+            dueue.Enqueue(NewDownInfo(5));
+
+            res = dueue.Find((a) => a.Id == 6, out target);
+            Assert.True(!res);
+            Assert.True(target == null);
+
+            res = dueue.Find((a) => a.Id == 1, out target);
+            Assert.True(res);
+            Assert.True(target.Id == 1);
+
+            res = dueue.Find((a) => a.Id == 5, out target);
+            Assert.True(res);
+            Assert.True(target.Id == 5);
+
+            res = dueue.Find((a) => a.Id == 2 || a.Id == 4, out target);
+            Assert.True(res);
+            Assert.True(target.Id == 2);
+
+            res = dueue.Remove((a) => a.Id == 2, out target);
+            res = dueue.Find((a) => a.Id == 2, out target);
+            Assert.True(!res);
+            Assert.True(target == null);
+
+            res = dueue.Find((a) => a.Id == 2 || a.Id == 4, out target);
+            Assert.True(res);
+            Assert.True(target.Id == 4);
+        }
+
+        public void Test5C1()
+        {
+            var dueue = new Deque<StDownInfo>(2, true);
+            bool res = false;
+
+            var info1 = new StDownInfo() { Id = 1 };
+            var info2 = new StDownInfo() { Id = 2 };
+            var info3 = new StDownInfo() { Id = 3 };
+            var info4 = new StDownInfo() { Id = 4 };
+            var info5 = new StDownInfo() { Id = 5 };
+            var info6 = new StDownInfo() { Id = 6 };
+            var info7 = new StDownInfo() { Id = 3 };
+
+            dueue.Enqueue(info1);
+            dueue.Enqueue(info2);
+            dueue.Enqueue(info3);
+            dueue.Enqueue(info4);
+            dueue.Enqueue(info5);
+
+            res = dueue.Contains(info1);
+            Assert.True(res);
+            res = dueue.Contains(info2);
+            Assert.True(res);
+            res = dueue.Contains(info3);
+            Assert.True(res);
+            res = dueue.Contains(info4);
+            Assert.True(res);
+            res = dueue.Contains(info5);
+            Assert.True(res);
+            res = dueue.Contains(info6);
+            Assert.True(!res);
+            res = dueue.Contains(info7);
+            Assert.True(res);
+
+            dueue.Remove(info3);
+            res = dueue.Contains(info3);
+            Assert.True(!res);
+            res = dueue.Contains(info7);
+            Assert.True(!res);
+        }
+
+        public void Test5C2()
+        {
+            var dueue = new Deque<DownInfo>(2, true);
+            bool res = false;
+
+            var info1 = NewDownInfo(1);
+            var info2 = NewDownInfo(2);
+            var info3 = NewDownInfo(3);
+            var info4 = NewDownInfo(4);
+            var info5 = NewDownInfo(5);
+            var info6 = NewDownInfo(6);
+            var info7 = NewDownInfo(3);
+
+            dueue.Enqueue(info1);
+            dueue.Enqueue(info2);
+            dueue.Enqueue(info3);
+            dueue.Enqueue(info4);
+            dueue.Enqueue(info5);
+
+            res = dueue.Contains(info1);
+            Assert.True(res);
+            res = dueue.Contains(info2);
+            Assert.True(res);
+            res = dueue.Contains(info3);
+            Assert.True(res);
+            res = dueue.Contains(info4);
+            Assert.True(res);
+            res = dueue.Contains(info5);
+            Assert.True(res);
+            res = dueue.Contains(info6);
+            Assert.True(!res);
+            res = dueue.Contains(info7);
+            Assert.True(!res);
+
+            dueue.Remove(info3);
+            res = dueue.Contains(info3);
+            Assert.True(!res);
+            res = dueue.Contains(info7);
+            Assert.True(!res);
         }
 
         private DownInfo NewDownInfo(int id)

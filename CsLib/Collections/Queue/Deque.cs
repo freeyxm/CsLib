@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace CsLib.Collections
 {
@@ -201,14 +202,9 @@ namespace CsLib.Collections
             {
                 int length = mArray.Length;
                 int count = mCount;
+                int index = mHead;
                 for (int i = 0; i < count; i++)
                 {
-                    int index = mHead + i;
-                    if (index >= length)
-                    {
-                        index -= length;
-                    }
-
                     if (Equals(mArray[index], item))
                     {
                         if (index == mHead)
@@ -217,22 +213,18 @@ namespace CsLib.Collections
                             return true;
                         }
 
+                        int index1 = index;
+                        int index2 = index + 1;
                         for (int j = i; j < count - 1; j++)
                         {
-                            int index1 = mHead + j;
-                            int index2 = index1 + 1;
-
                             if (index1 >= length)
-                            {
                                 index1 -= length;
+                            if (index2 >= length)
                                 index2 -= length;
-                            }
-                            else if (index2 >= length)
-                            {
-                                index2 -= length;
-                            }
 
                             mArray[index1] = mArray[index2];
+                            index1++;
+                            index2++;
                         }
 
                         mArray[mTail] = default(T); // Clear the reference to allow garbage collection
@@ -250,6 +242,12 @@ namespace CsLib.Collections
                             mHead = mTail = 0;
                         }
                         return true;
+                    }
+
+                    index++;
+                    if (index >= length)
+                    {
+                        index -= length;
                     }
                 }
             }
@@ -302,14 +300,9 @@ namespace CsLib.Collections
             {
                 int length = mArray.Length;
                 int count = mCount;
+                int index = mHead;
                 for (int i = 0; i < count; i++)
                 {
-                    int index = mHead + i;
-                    if (index >= length)
-                    {
-                        index -= length;
-                    }
-
                     if (match(mArray[index]))
                     {
                         target = mArray[index];
@@ -320,22 +313,18 @@ namespace CsLib.Collections
                             return true;
                         }
 
+                        int index1 = index;
+                        int index2 = index + 1;
                         for (int j = i; j < count - 1; j++)
                         {
-                            int index1 = mHead + j;
-                            int index2 = index1 + 1;
-
                             if (index1 >= length)
-                            {
                                 index1 -= length;
+                            if (index2 >= length)
                                 index2 -= length;
-                            }
-                            else if (index2 >= length)
-                            {
-                                index2 -= length;
-                            }
 
                             mArray[index1] = mArray[index2];
+                            index1++;
+                            index2++;
                         }
 
                         mArray[mTail] = default(T); // Clear the reference to allow garbage collection
@@ -353,6 +342,12 @@ namespace CsLib.Collections
                             mHead = mTail = 0;
                         }
                         return true;
+                    }
+
+                    index++;
+                    if (index >= length)
+                    {
+                        index -= length;
                     }
                 }
             }
@@ -409,15 +404,9 @@ namespace CsLib.Collections
             {
                 int length = mArray.Length;
                 int count = mCount;
-                int tail = mTail;
+                int index = mTail;
                 for (int i = 0; i < count; i++)
                 {
-                    int index = tail - i;
-                    if (index < 0)
-                    {
-                        index += length;
-                    }
-
                     var target = mArray[index];
                     if (match(target))
                     {
@@ -429,22 +418,18 @@ namespace CsLib.Collections
                             break;
                         }
 
+                        int index1 = index;
+                        int index2 = index + 1;
                         for (int j = i; j > 0; j--)
                         {
-                            int index1 = tail - j;
-                            int index2 = index1 + 1;
-
-                            if (index2 < 0)
-                            {
-                                index2 += length;
-                                index1 += length;
-                            }
-                            else if (index1 < 0)
-                            {
-                                index1 += length;
-                            }
+                            if (index1 >= length)
+                                index1 -= length;
+                            if (index2 >= length)
+                                index2 -= length;
 
                             mArray[index1] = mArray[index2];
+                            index1++;
+                            index2++;
                         }
 
                         mArray[mTail] = default(T); // Clear the reference to allow garbage collection
@@ -464,6 +449,12 @@ namespace CsLib.Collections
                         }
 
                         SafeInvoke(onRemove, target, "Deque.RemoveAll.onRemove");
+                    }
+
+                    index--;
+                    if (index < 0)
+                    {
+                        index += length;
                     }
                 }
             }
@@ -493,24 +484,60 @@ namespace CsLib.Collections
             else
             {
                 int length = mArray.Length;
+                int index = mHead;
                 for (int i = 0; i < mCount; i++)
                 {
-                    int index = mHead + i;
-                    if (index >= length)
-                    {
-                        index -= length;
-                    }
-
                     if (match(mArray[index]))
                     {
                         target = mArray[index];
                         return true;
+                    }
+                    index++;
+                    if (index >= length)
+                    {
+                        index -= length;
                     }
                 }
             }
 
             target = default(T);
             return false;
+        }
+
+        public void FindAll(Predicate<T> match, ref List<T> result)
+        {
+            if (mCount == 0)
+            {
+                return;
+            }
+
+            if (mHead <= mTail)
+            {
+                for (int i = mHead; i <= mTail; i++)
+                {
+                    if (match(mArray[i]))
+                    {
+                        result.Add(mArray[i]);
+                    }
+                }
+            }
+            else
+            {
+                int length = mArray.Length;
+                int index = mHead;
+                for (int i = 0; i < mCount; i++)
+                {
+                    if (match(mArray[index]))
+                    {
+                        result.Add(mArray[index]);
+                    }
+                    index++;
+                    if (index >= length)
+                    {
+                        index -= length;
+                    }
+                }
+            }
         }
 
         public bool Contains(T item)
@@ -533,17 +560,17 @@ namespace CsLib.Collections
             else
             {
                 int length = mArray.Length;
+                int index = mHead;
                 for (int i = 0; i < mCount; i++)
                 {
-                    int index = mHead + i;
-                    if (index >= length)
-                    {
-                        index -= length;
-                    }
-
                     if (Equals(mArray[index], item))
                     {
                         return true;
+                    }
+                    index++;
+                    if (index >= length)
+                    {
+                        index -= length;
                     }
                 }
             }
@@ -574,14 +601,15 @@ namespace CsLib.Collections
             int length = mArray.Length;
             int newSize = length * 2;
             T[] newArray = new T[newSize];
+            int index = mHead;
             for (int i = 0; i < mCount; i++)
             {
-                int index = mHead + i;
+                newArray[i] = mArray[index];
+                index++;
                 if (index >= length)
                 {
                     index -= length;
                 }
-                newArray[i] = mArray[index];
             }
             mArray = newArray;
             mHead = 0;

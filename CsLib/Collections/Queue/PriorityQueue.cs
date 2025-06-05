@@ -62,6 +62,15 @@ namespace CsLib.Collections
             throw new Exception("An unexpected exception occurred.");
         }
 
+        public int GetCount(int priority)
+        {
+            if (mDict.TryGetValue(priority, out var queue))
+            {
+                return queue.Count;
+            }
+            return 0;
+        }
+
         public void PushBack(int priority, T item)
         {
             if (!mDict.TryGetValue(priority, out var queue))
@@ -238,6 +247,15 @@ namespace CsLib.Collections
 
             target = default(T);
             return false;
+        }
+
+        public void FindAll(Predicate<T> match, ref List<T> result)
+        {
+            foreach (var kvp in mDict)
+            {
+                var queue = kvp.Value;
+                queue.FindAll(match, ref result);
+            }
         }
 
         public bool Contains(T item)
