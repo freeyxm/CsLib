@@ -43,10 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assert.cs" />
     <Compile Include="CsUtil\Collections\BinaryTree\AvlTreeTest.cs" />
     <Compile Include="CsUtil\Collections\BinaryTree\BinaryTreeTest.cs" />
     <Compile Include="CsUtil\Collections\BinaryTree\RBTreeTest.cs" />
     <Compile Include="CsUtil\Collections\Queue\DequeTest.cs" />
+    <Compile Include="CsUtil\Collections\Queue\PriorityQueueTest.cs" />
     <Compile Include="CsUtil\Collections\Select\SelectionTest.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

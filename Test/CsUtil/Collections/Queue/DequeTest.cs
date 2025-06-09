@@ -743,23 +743,5 @@ namespace Test
         {
             return new DownInfo() { Id = id };
         }
-
-        private static class Assert
-        {
-            public static void Fail(string msg = "failed")
-            {
-                Debug.Fail(msg);
-            }
-
-            public static void True(bool condition)
-            {
-                Debug.Assert(condition, $"Expected: {condition}");
-            }
-
-            public static void AreEqual(int expected, int actual)
-            {
-                Debug.Assert(expected == actual, $"Expected: {expected}, Actual: {actual}");
-            }
-        }
     }
 }
